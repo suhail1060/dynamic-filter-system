@@ -5,6 +5,10 @@ import {
 import type { Employee, SortConfig } from '../../types';
 import { getNestedValue } from '../../utils/filterEngine';
 
+import { exportToCSV, exportToJSON } from '../../utils/exportData';
+import { Download } from 'lucide-react';
+import { Button } from '@mui/material';
+
 interface Props {
   data: Employee[];
   total: number;
@@ -81,17 +85,44 @@ export function DataTable({ data, total, sortConfig, onSort }: Props) {
   return (
     <Box sx={{ border: '1px solid #1e3a5f', borderRadius: 3, overflow: 'hidden' }}>
       {/* Stats bar */}
-      <Stack direction="row" alignItems="center" gap={1.5} sx={{ px: 2.5, py: 1.5, bgcolor: 'background.paper', borderBottom: '1px solid #1e3a5f' }}>
-        <Typography fontSize={13} color="primary.main" fontWeight={700}>{data.length}</Typography>
-        <Typography fontSize={13} color="text.disabled">/ {total} records</Typography>
-        {data.length < total && (
-          <Chip label="Filtered" size="small" sx={{ fontSize: 10, bgcolor: 'rgba(56,189,248,0.1)', color: 'primary.main', border: '1px solid rgba(56,189,248,0.2)' }} />
-        )}
-      </Stack>
+      <Stack
+  direction="row"
+  alignItems="center"
+  justifyContent="space-between"
+  sx={{ px: 2.5, py: 1.5, bgcolor: 'background.paper', borderBottom: '1px solid #1e3a5f' }}
+>
+  <Stack direction="row" alignItems="center" gap={1.5}>
+    <Typography fontSize={13} color="primary.main" fontWeight={700}>{data.length}</Typography>
+    <Typography fontSize={13} color="text.disabled">/ {total} records</Typography>
+    {data.length < total && (
+      <Chip label="Filtered" size="small" sx={{ fontSize: 10, bgcolor: 'rgba(56,189,248,0.1)', color: 'primary.main', border: '1px solid rgba(56,189,248,0.2)' }} />
+    )}
+  </Stack>
+
+  {/* Export buttons */}
+  <Stack direction="row" gap={1}>
+    <Button
+      size="small"
+      startIcon={<Download size={13} />}
+      onClick={() => exportToCSV(data)}
+      sx={{ fontSize: 12, color: 'success.main', border: '1px solid', borderColor: 'rgba(52,211,153,0.3)', bgcolor: 'rgba(52,211,153,0.05)' }}
+    >
+      CSV
+    </Button>
+    <Button
+      size="small"
+      startIcon={<Download size={13} />}
+      onClick={() => exportToJSON(data)}
+      sx={{ fontSize: 12, color: 'secondary.main', border: '1px solid', borderColor: 'rgba(129,140,248,0.3)', bgcolor: 'rgba(129,140,248,0.05)' }}
+    >
+      JSON
+    </Button>
+  </Stack>
+</Stack>
 
       {/* Table */}
       <TableContainer>
-        <Table size="small">
+        <Table size="small" aria-label="Employee data table">
           <TableHead>
             <TableRow sx={{ bgcolor: 'rgba(15,23,42,0.95)' }}>
               {COLUMNS.map(col => (

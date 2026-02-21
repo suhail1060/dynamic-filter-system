@@ -5,12 +5,16 @@ import { FilterPanel } from './components/FilterPanel/FilterPanel';
 import { DataTable } from './components/DataTable/DataTable';
 import { fetchEmployees } from './services/employeeApi';
 import { filterData, getNestedValue } from './utils/filterEngine';
+import { usePersistedFilters } from './hooks/usePersistedFilters';
+// import { useDebounce } from './hooks/useDebounce';
+import {useDebounce} from "./hooks/useDebounds";
 
 export default function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FilterCondition[]>([]);
+  const { filters, setFilters, clearPersistedFilters } = usePersistedFilters();
+  const debouncedFilters = useDebounce(filters, 300);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', dir: 'asc' });
 
   // Fetch from mock API on mount
@@ -27,14 +31,14 @@ export default function App() {
   }, []);
 
   const filteredData = useMemo(() => {
-    const result = filterData(employees, filters);
-    return [...result].sort((a, b) => {
-      const av = getNestedValue(a as any, sortConfig.key) ?? '';
-      const bv = getNestedValue(b as any, sortConfig.key) ?? '';
-      const cmp = av < bv ? -1 : av > bv ? 1 : 0;
-      return sortConfig.dir === 'asc' ? cmp : -cmp;
-    });
-  }, [employees, filters, sortConfig]);
+  const result = filterData(employees, debouncedFilters); // ← use debouncedFilters
+  return [...result].sort((a, b) => {
+    const av = getNestedValue(a as any, sortConfig.key) ?? '';
+    const bv = getNestedValue(b as any, sortConfig.key) ?? '';
+    const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+    return sortConfig.dir === 'asc' ? cmp : -cmp;
+  });
+}, [employees, debouncedFilters, sortConfig]);
 
   const handleSort = useCallback((key: string) => {
     setSortConfig(prev => ({
@@ -79,7 +83,11 @@ export default function App() {
         {/* Content */}
         {!loading && !error && (
           <>
-            <FilterPanel filters={filters} onChange={setFilters} />
+            <FilterPanel
+              filters={filters}
+              onChange={setFilters}
+              onClearAll={clearPersistedFilters}
+            />
             <DataTable data={filteredData} total={employees.length} sortConfig={sortConfig} onSort={handleSort} />
           </>
         )}

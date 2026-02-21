@@ -8,9 +8,11 @@ import { FilterRow } from './FilterRow';
 interface Props {
   filters: FilterCondition[];
   onChange: (filters: FilterCondition[]) => void;
+  onClearAll: () => void;  
 }
 
-export function FilterPanel({ filters, onChange }: Props) {
+
+export function FilterPanel({ filters, onChange, onClearAll }: Props) {
   const addFilter = () => {
     const first = FIELD_DEFINITIONS[0];
     onChange([...filters, {
@@ -74,6 +76,7 @@ export function FilterPanel({ filters, onChange }: Props) {
           <Button
             size="small"
             variant="outlined"
+             aria-label="Add new filter condition"
             onClick={addFilter}
             sx={{ color: 'primary.main', borderColor: 'primary.main', bgcolor: 'rgba(56,189,248,0.05)' }}
           >
@@ -99,6 +102,17 @@ export function FilterPanel({ filters, onChange }: Props) {
           />
         </Box>
       ))}
+
+       {/* {filters.length > 0 && (
+    <Button
+      size="small"
+      startIcon={<X size={14} />}
+      onClick={onClearAll}  
+      sx={{ color: 'error.main', borderColor: 'error.dark', border: '1px solid', bgcolor: 'rgba(239,68,68,0.05)' }}
+    >
+      Clear All
+    </Button>
+  )} */}
     </Box>
   );
 }
