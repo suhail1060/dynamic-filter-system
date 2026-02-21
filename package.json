@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "mock": "node mockServer.cjs",
-    "dev:all": "concurrently \"npm run mock\" \"npm run dev\""
+    "dev:all": "concurrently \"npm run mock\" \"npm run dev\"",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

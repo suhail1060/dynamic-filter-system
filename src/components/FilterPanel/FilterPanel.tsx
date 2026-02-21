@@ -12,7 +12,7 @@ interface Props {
 }
 
 
-export function FilterPanel({ filters, onChange, onClearAll }: Props) {
+export function FilterPanel({ filters, onChange }: Props) {
   const addFilter = () => {
     const first = FIELD_DEFINITIONS[0];
     onChange([...filters, {

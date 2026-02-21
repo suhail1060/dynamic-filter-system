@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Box, Typography, Chip, Stack, CircularProgress, Alert } from '@mui/material';
-import type { FilterCondition, SortConfig, Employee } from './types';
+import type {  SortConfig, Employee } from './types';
 import { FilterPanel } from './components/FilterPanel/FilterPanel';
 import { DataTable } from './components/DataTable/DataTable';
 import { fetchEmployees } from './services/employeeApi';
